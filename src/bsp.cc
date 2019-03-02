@@ -295,6 +295,9 @@ void bsp_push_reg( const void * addr, bsp_size_t size )
     if (!s_spmd || s_spmd->closed())
         bsp_abort("bsp_push_reg: can only be called within SPMD section\n");
 
+    if ( addr == NULL && size != 0)
+        bsp_abort("bsp_push_reg: NULL can only be registered if size is zero\n");
+
     if (size < 0)
         bsp_abort("bsp_push_reg: memory size must be positive\n");
 
@@ -430,7 +433,7 @@ void bsp_get( bsp_pid_t pid, const void * src, bsp_size_t offset,
     if (!s_spmd || s_spmd->closed())
         bsp_abort("bsp_get: can only be called within SPMD section\n");
 
-    if (pid < 0 || pid > s_spmd->nprocs())
+    if (pid < 0 || pid >= s_spmd->nprocs())
         bsp_abort("bsp_get: The source process ID does not exist\n");
 
     if (offset < 0)
